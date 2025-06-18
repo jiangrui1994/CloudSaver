@@ -82,8 +82,6 @@ export class Searcher {
   }
 
   async searchAll(keyword: string, channelId?: string, messageId?: string) {
-    const allResults: any[] = [];
-
     const channelList: any[] = channelId
       ? config.telegram.channels.filter((channel: any) => channel.id === channelId)
       : config.telegram.channels;
@@ -94,34 +92,33 @@ export class Searcher {
         const messageIdparams = messageId ? `before=${messageId}` : "";
         const url = `/${channel.id}${keyword ? `?q=${encodeURIComponent(keyword)}&${messageIdparams}` : `?${messageIdparams}`}`;
         console.log(`Searching in channel ${channel.name} with URL: ${url}`);
-        return this.searchInWeb(url).then((results) => {
-          console.log(`Found ${results.items.length} items in channel ${channel.name}`);
-          if (results.items.length > 0) {
-            const channelResults = results.items
-              .filter((item: sourceItem) => item.cloudLinks && item.cloudLinks.length > 0)
-              .map((item: sourceItem) => ({
-                ...item,
-                channel: channel.name,
-                channelId: channel.id,
-              }));
-
-            allResults.push({
-              list: channelResults,
-              channelInfo: {
-                ...channel,
-                channelLogo: results.channelLogo,
-              },
-              id: channel.id,
-            });
-          }
-        });
+        const results = await this.searchInWeb(url);
+        console.log(`Found ${results.items.length} items in channel ${channel.name}`);
+        if (results.items.length > 0) {
+          const channelResults = results.items
+            .filter((item: sourceItem) => item.cloudLinks && item.cloudLinks.length > 0)
+            .map((item: sourceItem) => ({
+              ...item,
+              channel: channel.name,
+              channelId: channel.id,
+            }));
+          return {
+            list: channelResults,
+            channelInfo: {
+              ...channel,
+              channelLogo: results.channelLogo,
+            },
+            id: channel.id,
+          };
+        }
       } catch (error) {
         logger.error(`搜索频道 ${channel.name} 失败:`, error);
       }
+      return null;
     });
 
     // 等待所有请求完成
-    await Promise.all(searchPromises);
+    const allResults = (await Promise.all(searchPromises)).filter((result) => !!result);
 
     return {
       data: allResults,
