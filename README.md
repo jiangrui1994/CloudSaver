@@ -308,6 +308,7 @@ docker-compose up -d
 <div align="center">
   <div>
     <p>qq交流群(4群)(1058040657)</p>
+    <img src="https://cdn.nlark.com/yuque/0/2025/jpeg/5363273/1760079011167-1959c912-513b-4bdb-a1cd-07712d458788.jpeg?x-oss-process=image%2Fformat%2Cwebp%2Finterlace%2C1" height="300" alt="qq群">
   </div>
 </div>
 
