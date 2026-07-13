@@ -3,7 +3,7 @@ import sequelize from "../config/database";
 
 interface UserAttributes {
   id: number;
-  userId?: number;
+  userId?: string;
   username: string;
   password: string;
   role: number; // 修改为数字类型
@@ -13,7 +13,7 @@ interface UserCreationAttributes extends Optional<UserAttributes, "id"> {}
 
 class User extends Model<UserAttributes, UserCreationAttributes> implements UserAttributes {
   public id!: number;
-  public userId!: number;
+  public userId!: string;
   public username!: string;
   public password!: string;
   public role!: number; // 实现数字类型的角色属性

@@ -8,6 +8,7 @@ import { QuarkService } from "./services/QuarkService";
 import { Searcher } from "./services/Searcher";
 import { DoubanService } from "./services/DoubanService";
 import { UserService } from "./services/UserService";
+import { ApiTokenService } from "./services/ApiTokenService";
 import { ImageService } from "./services/ImageService";
 import { SettingService } from "./services/SettingService";
 import { SponsorsService } from "./services/SponsorsService";
@@ -31,6 +32,7 @@ container.bind<ImageService>(TYPES.ImageService).to(ImageService).inSingletonSco
 container.bind<SettingService>(TYPES.SettingService).to(SettingService).inSingletonScope();
 container.bind<DoubanService>(TYPES.DoubanService).to(DoubanService).inSingletonScope();
 container.bind<UserService>(TYPES.UserService).to(UserService).inSingletonScope();
+container.bind<ApiTokenService>(TYPES.ApiTokenService).to(ApiTokenService).inSingletonScope();
 container.bind<SponsorsService>(TYPES.SponsorsService).to(SponsorsService).inSingletonScope();
 // Controllers
 container.bind<Cloud115Controller>(TYPES.Cloud115Controller).to(Cloud115Controller);

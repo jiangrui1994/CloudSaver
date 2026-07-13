@@ -1,0 +1,17 @@
+{
+  "name": "@cloudsaver/cli",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Agent-friendly JSON CLI for CloudSaver",
+  "bin": {
+    "cloudsaver": "./src/cli.js"
+  },
+  "scripts": {
+    "start": "node src/cli.js",
+    "test": "node --test"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
