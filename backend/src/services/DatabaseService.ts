@@ -2,6 +2,7 @@ import { Sequelize, QueryTypes } from "sequelize";
 import GlobalSetting from "../models/GlobalSetting";
 import { Searcher } from "./Searcher";
 import sequelize from "../config/database";
+import "../models/ApiToken";
 
 // 全局设置默认值
 const DEFAULT_GLOBAL_SETTINGS = {

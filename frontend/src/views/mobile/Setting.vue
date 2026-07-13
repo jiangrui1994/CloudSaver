@@ -108,6 +108,75 @@
       </div>
     </div>
 
+    <div class="setting__section">
+      <div class="setting__title token-title">
+        <span>API Token</span>
+        <van-button size="small" type="primary" @click="showCreateTokenDialog = true">
+          生成 Token
+        </van-button>
+      </div>
+      <div class="setting__card">
+        <van-cell-group inset>
+          <van-cell title="用于 Agent 和 CLI 长期调用" label="明文仅在创建时显示一次" />
+          <van-cell
+            v-for="token in apiTokens"
+            :key="token.tokenId"
+            :title="token.name"
+            :label="`${token.tokenPrefix} · ${getTokenStatus(token)}`"
+          >
+            <template #value>
+              <van-button
+                v-if="!token.revokedAt"
+                size="mini"
+                type="danger"
+                plain
+                @click="handleRevokeToken(token)"
+              >
+                撤销
+              </van-button>
+            </template>
+          </van-cell>
+          <van-empty v-if="!tokensLoading && apiTokens.length === 0" description="尚未创建 Token" />
+          <van-loading v-if="tokensLoading" class="token-loading" vertical>加载中</van-loading>
+        </van-cell-group>
+      </div>
+    </div>
+
+    <van-dialog
+      v-model:show="showCreateTokenDialog"
+      title="生成 API Token"
+      show-cancel-button
+      :before-close="beforeCreateTokenDialogClose"
+    >
+      <div class="token-dialog-content">
+        <van-field v-model="tokenForm.name" label="名称" placeholder="例如：OpenClaw 自动化" />
+        <van-field name="expiresInDays" label="有效期">
+          <template #input>
+            <van-radio-group v-model="tokenForm.expiresInDays" direction="horizontal">
+              <van-radio :name="null">永久</van-radio>
+              <van-radio :name="90">90天</van-radio>
+              <van-radio :name="365">365天</van-radio>
+            </van-radio-group>
+          </template>
+        </van-field>
+      </div>
+    </van-dialog>
+
+    <van-dialog
+      v-model:show="showGeneratedTokenDialog"
+      title="请立即复制 Token"
+      :close-on-click-overlay="false"
+      @closed="generatedToken = ''"
+    >
+      <div class="token-dialog-content">
+        <p class="token-warning">关闭窗口后无法再次查看此 Token。</p>
+        <van-field v-model="generatedToken" type="textarea" rows="3" readonly autosize />
+        <van-button block type="primary" class="copy-token-button" @click="copyGeneratedToken">
+          复制 Token
+        </van-button>
+      </div>
+    </van-dialog>
+
     <!-- 保存按钮 -->
     <div class="setting__submit">
       <van-button round block type="primary" @click="handleSave"> 保存设置 </van-button>
@@ -118,8 +187,10 @@
 <script setup lang="ts">
 import { useUserSettingStore } from "@/stores/userSetting";
 import { ref, watch } from "vue";
-import { showNotify } from "vant";
-import type { GlobalSettingAttributes, UserSettingAttributes } from "@/types/user";
+import { showConfirmDialog, showNotify } from "vant";
+import type { ApiTokenInfo, GlobalSettingAttributes, UserSettingAttributes } from "@/types/user";
+import { userApi } from "@/api/user";
+import { copyText } from "@/utils/clipboard";
 
 const settingStore = useUserSettingStore();
 
@@ -140,6 +211,16 @@ const localUserSettings = ref<UserSettingAttributes>({
 // 添加显示/隐藏密码的状态
 const showCloud115Cookie = ref(false);
 const showQuarkCookie = ref(false);
+const apiTokens = ref<ApiTokenInfo[]>([]);
+const tokensLoading = ref(false);
+const creatingToken = ref(false);
+const showCreateTokenDialog = ref(false);
+const showGeneratedTokenDialog = ref(false);
+const generatedToken = ref("");
+const tokenForm = ref<{ name: string; expiresInDays: number | null }>({
+  name: "",
+  expiresInDays: null,
+});
 
 // 监听 store 变化
 watch(
@@ -164,6 +245,87 @@ watch(
 
 // 初始化获取设置
 settingStore.getSettings();
+
+const loadApiTokens = async () => {
+  tokensLoading.value = true;
+  try {
+    const response = await userApi.listApiTokens();
+    apiTokens.value = response.data || [];
+  } catch (error) {
+    console.error("加载 API Token 失败:", error);
+  } finally {
+    tokensLoading.value = false;
+  }
+};
+
+const createApiToken = async (): Promise<boolean> => {
+  if (!tokenForm.value.name.trim()) {
+    showNotify({ type: "warning", message: "请输入 Token 名称" });
+    return false;
+  }
+  creatingToken.value = true;
+  try {
+    const response = await userApi.createApiToken({
+      name: tokenForm.value.name.trim(),
+      expiresInDays: tokenForm.value.expiresInDays,
+    });
+    if (response.code !== 0 || !response.data) {
+      throw new Error(response.message || "生成 API Token 失败");
+    }
+    generatedToken.value = response.data.token;
+    showGeneratedTokenDialog.value = true;
+    tokenForm.value = { name: "", expiresInDays: null };
+    await loadApiTokens();
+    return true;
+  } catch (error) {
+    console.error("生成 API Token 失败:", error);
+    return false;
+  } finally {
+    creatingToken.value = false;
+  }
+};
+
+const beforeCreateTokenDialogClose = async (action: string) => {
+  if (action !== "confirm") return true;
+  return await createApiToken();
+};
+
+const handleRevokeToken = async (token: ApiTokenInfo) => {
+  try {
+    await showConfirmDialog({
+      title: "撤销 Token",
+      message: `撤销“${token.name}”后，使用它的 Agent 将立即失去访问权限。`,
+      confirmButtonText: "确认撤销",
+    });
+  } catch {
+    return;
+  }
+  await userApi.revokeApiToken(token.tokenId);
+  showNotify({ type: "success", message: "Token 已撤销" });
+  await loadApiTokens();
+};
+
+const copyGeneratedToken = async () => {
+  try {
+    await copyText(generatedToken.value);
+    showNotify({ type: "success", message: "Token 已复制" });
+  } catch (error) {
+    showNotify({
+      type: "danger",
+      message: error instanceof Error ? error.message : "复制失败，请手动复制",
+    });
+  }
+};
+
+const getTokenStatus = (token: ApiTokenInfo) => {
+  if (token.revokedAt) return "已撤销";
+  if (token.expiresAt && new Date(token.expiresAt).getTime() <= Date.now()) return "已过期";
+  return token.lastUsedAt
+    ? `最近使用 ${new Date(token.lastUsedAt).toLocaleDateString()}`
+    : "未使用";
+};
+
+loadApiTokens();
 
 // 处理代理开关变化并立即保存
 const handleProxyChange = async (val: boolean) => {
@@ -246,6 +408,30 @@ const handleProxyHostChange = (val: string) => {
     background: var(--theme-other_background);
     z-index: 99;
   }
+}
+
+.token-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.token-loading {
+  padding: 24px 0;
+}
+
+.token-dialog-content {
+  padding: 16px;
+}
+
+.token-warning {
+  margin: 0 0 12px;
+  color: var(--van-warning-color);
+  font-size: 13px;
+}
+
+.copy-token-button {
+  margin-top: 12px;
 }
 
 // 深度修改 Vant 组件样式

@@ -179,6 +179,105 @@
       </div>
     </el-card>
 
+    <el-card class="settings-card token-card">
+      <template #header>
+        <div class="token-card-header">
+          <div class="card-header">
+            <el-icon><Key /></el-icon>
+            <h2>API Token</h2>
+          </div>
+          <el-button type="primary" :icon="Plus" @click="showCreateTokenDialog = true">
+            生成 Token
+          </el-button>
+        </div>
+      </template>
+
+      <div class="settings-section">
+        <el-alert
+          title="Token 可供 Agent 和 CLI 长期调用 API。明文只在创建时显示一次，请妥善保存。"
+          type="warning"
+          :closable="false"
+          show-icon
+        />
+
+        <el-table v-loading="tokensLoading" :data="apiTokens" empty-text="尚未创建 API Token">
+          <el-table-column prop="name" label="名称" min-width="130" />
+          <el-table-column prop="tokenPrefix" label="Token" min-width="130" />
+          <el-table-column label="状态" width="100">
+            <template #default="{ row }">
+              <el-tag :type="getTokenStatus(row).type">{{ getTokenStatus(row).text }}</el-tag>
+            </template>
+          </el-table-column>
+          <el-table-column label="最近使用" min-width="150">
+            <template #default="{ row }">{{ formatDate(row.lastUsedAt) || "从未使用" }}</template>
+          </el-table-column>
+          <el-table-column label="有效期至" min-width="150">
+            <template #default="{ row }">{{ formatDate(row.expiresAt) || "永不过期" }}</template>
+          </el-table-column>
+          <el-table-column label="操作" width="90" fixed="right">
+            <template #default="{ row }">
+              <el-button
+                v-if="!row.revokedAt"
+                type="danger"
+                link
+                :icon="Delete"
+                @click="handleRevokeToken(row)"
+              >
+                撤销
+              </el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+      </div>
+    </el-card>
+
+    <el-dialog v-model="showCreateTokenDialog" title="生成 API Token" width="460px">
+      <el-form label-position="top">
+        <el-form-item label="名称" required>
+          <el-input
+            v-model="tokenForm.name"
+            maxlength="50"
+            show-word-limit
+            placeholder="例如：OpenClaw 自动化"
+          />
+        </el-form-item>
+        <el-form-item label="有效期">
+          <el-select v-model="tokenForm.expiresInDays" style="width: 100%">
+            <el-option label="永不过期" :value="null" />
+            <el-option label="30 天" :value="30" />
+            <el-option label="90 天" :value="90" />
+            <el-option label="365 天" :value="365" />
+          </el-select>
+        </el-form-item>
+      </el-form>
+      <template #footer>
+        <el-button @click="showCreateTokenDialog = false">取消</el-button>
+        <el-button type="primary" :loading="creatingToken" @click="handleCreateToken">
+          生成
+        </el-button>
+      </template>
+    </el-dialog>
+
+    <el-dialog
+      v-model="showGeneratedTokenDialog"
+      title="API Token 已生成"
+      width="560px"
+      :close-on-click-modal="false"
+      @closed="generatedToken = ''"
+    >
+      <el-alert
+        title="请立即复制。关闭窗口后无法再次查看此 Token。"
+        type="warning"
+        :closable="false"
+        show-icon
+      />
+      <el-input v-model="generatedToken" class="generated-token" readonly>
+        <template #append>
+          <el-button :icon="CopyDocument" @click="copyGeneratedToken">复制</el-button>
+        </template>
+      </el-input>
+    </el-dialog>
+
     <!-- 保存按钮 -->
     <div class="settings-actions">
       <el-button type="primary" @click="handleSave"> 保存设置 </el-button>
@@ -191,6 +290,10 @@ import { useUserSettingStore } from "@/stores/userSetting";
 import { ref, watch } from "vue";
 import { ElMessage } from "element-plus";
 import type { GlobalSettingAttributes, UserSettingAttributes } from "@/types/user";
+import type { ApiTokenInfo } from "@/types/user";
+import { userApi } from "@/api/user";
+import { copyText } from "@/utils/clipboard";
+import { ElMessageBox } from "element-plus";
 import {
   Connection,
   Monitor,
@@ -199,6 +302,9 @@ import {
   User,
   Lock,
   QuestionFilled,
+  Plus,
+  Delete,
+  CopyDocument,
 } from "@element-plus/icons-vue";
 
 const settingStore = useUserSettingStore();
@@ -215,6 +321,17 @@ const localGlobalSetting = ref<GlobalSettingAttributes>({
 const localUserSettings = ref<UserSettingAttributes>({
   cloud115Cookie: "",
   quarkCookie: "",
+});
+
+const apiTokens = ref<ApiTokenInfo[]>([]);
+const tokensLoading = ref(false);
+const creatingToken = ref(false);
+const showCreateTokenDialog = ref(false);
+const showGeneratedTokenDialog = ref(false);
+const generatedToken = ref("");
+const tokenForm = ref<{ name: string; expiresInDays: number | null }>({
+  name: "",
+  expiresInDays: null,
 });
 
 // 监听 store 变化,更新本地状态
@@ -240,6 +357,85 @@ watch(
 
 // 初始化获取设置
 settingStore.getSettings();
+
+const loadApiTokens = async () => {
+  tokensLoading.value = true;
+  try {
+    const response = await userApi.listApiTokens();
+    apiTokens.value = response.data || [];
+  } catch (error) {
+    console.error("加载 API Token 失败:", error);
+  } finally {
+    tokensLoading.value = false;
+  }
+};
+
+const handleCreateToken = async () => {
+  if (!tokenForm.value.name.trim()) {
+    ElMessage.warning("请输入 Token 名称");
+    return;
+  }
+  creatingToken.value = true;
+  try {
+    const response = await userApi.createApiToken({
+      name: tokenForm.value.name.trim(),
+      expiresInDays: tokenForm.value.expiresInDays,
+    });
+    if (response.code !== 0 || !response.data) {
+      throw new Error(response.message || "生成 API Token 失败");
+    }
+    generatedToken.value = response.data.token;
+    showCreateTokenDialog.value = false;
+    showGeneratedTokenDialog.value = true;
+    tokenForm.value = { name: "", expiresInDays: null };
+    await loadApiTokens();
+  } catch (error) {
+    console.error("生成 API Token 失败:", error);
+  } finally {
+    creatingToken.value = false;
+  }
+};
+
+const handleRevokeToken = async (token: ApiTokenInfo) => {
+  try {
+    await ElMessageBox.confirm(
+      `撤销“${token.name}”后，使用它的 Agent 将立即失去访问权限。`,
+      "撤销 Token",
+      {
+        confirmButtonText: "确认撤销",
+        cancelButtonText: "取消",
+        type: "warning",
+      }
+    );
+  } catch {
+    return;
+  }
+  await userApi.revokeApiToken(token.tokenId);
+  ElMessage.success("Token 已撤销");
+  await loadApiTokens();
+};
+
+const copyGeneratedToken = async () => {
+  try {
+    await copyText(generatedToken.value);
+    ElMessage.success("Token 已复制");
+  } catch (error) {
+    ElMessage.error(error instanceof Error ? error.message : "复制失败，请手动复制");
+  }
+};
+
+const formatDate = (value: string | null) =>
+  value ? new Date(value).toLocaleString("zh-CN", { hour12: false }) : "";
+
+const getTokenStatus = (token: ApiTokenInfo) => {
+  if (token.revokedAt) return { text: "已撤销", type: "info" as const };
+  if (token.expiresAt && new Date(token.expiresAt).getTime() <= Date.now()) {
+    return { text: "已过期", type: "warning" as const };
+  }
+  return { text: "有效", type: "success" as const };
+};
+
+loadApiTokens();
 
 // 处理代理开关变化并立即保存
 const handleProxyChange = async (val: boolean) => {
@@ -302,6 +498,16 @@ const handleSave = async () => {
     padding: 16px 20px;
     border-bottom: 1px solid rgba(0, 0, 0, 0.06);
   }
+}
+
+.token-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.generated-token {
+  margin-top: 20px;
 }
 
 .card-header {

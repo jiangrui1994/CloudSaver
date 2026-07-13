@@ -17,3 +17,17 @@ export interface UserSettingStore {
   displayStyle: "table" | "card";
   imagesSource: "proxy" | "local";
 }
+
+export interface ApiTokenInfo {
+  tokenId: string;
+  name: string;
+  tokenPrefix: string;
+  expiresAt: string | null;
+  lastUsedAt: string | null;
+  revokedAt: string | null;
+  createdAt: string;
+}
+
+export interface CreatedApiToken extends ApiTokenInfo {
+  token: string;
+}

@@ -148,6 +148,20 @@ A: 唯一可信方案：通过官方仓库代码+自主服务器部署，全程�
 
 ## 快速开始
 
+### Agent / CLI 调用
+
+项目包含一个仅输出 JSON 的 Agent 友好 CLI，可让 Codex、OpenClaw 等自动化工具调用用户自建的 CloudSaver API：
+
+```bash
+export CLOUDSAVER_API_URL="http://你的服务器:8008/api"
+export CLOUDSAVER_TOKEN="设置页面生成的长期 API Token"
+
+node cli/src/cli.js capabilities --pretty
+node cli/src/cli.js search --keyword "流浪地球" --pretty
+```
+
+完整命令、认证、资源解析与转存示例参见 [CloudSaver Agent CLI 文档](./docs/agent-cli.md)。
+
 ### 开发环境
 
 1. 克隆项目

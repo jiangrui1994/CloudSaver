@@ -1,4 +1,5 @@
 import request from "@/utils/request";
+import type { ApiTokenInfo, CreatedApiToken } from "@/types/user";
 
 export const userApi = {
   login: (data: { username: string; password: string }) => {
@@ -10,4 +11,8 @@ export const userApi = {
   getSponsors: () => {
     return request.get("/api/sponsors?timestamp=" + Date.now());
   },
+  listApiTokens: () => request.get<ApiTokenInfo[]>("/api/user/api-tokens"),
+  createApiToken: (data: { name: string; expiresInDays: number | null }) =>
+    request.post<CreatedApiToken>("/api/user/api-tokens", data),
+  revokeApiToken: (tokenId: string) => request.delete(`/api/user/api-tokens/${tokenId}`),
 };

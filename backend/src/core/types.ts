@@ -7,6 +7,7 @@ export const TYPES = {
   ImageService: Symbol.for("ImageService"),
   SettingService: Symbol.for("SettingService"),
   UserService: Symbol.for("UserService"),
+  ApiTokenService: Symbol.for("ApiTokenService"),
   SponsorsService: Symbol.for("SponsorsService"),
 
   Cloud115Controller: Symbol.for("Cloud115Controller"),
