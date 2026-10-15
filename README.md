@@ -1,4 +1,5 @@
 <div align="center">
+  <img src="./docs/logo.svg" width="112" alt="CloudSaver Logo" />
   <h1>CloudSaver</h1>
   <p><strong>一个可自行部署的网盘资源搜索与转存工具</strong></p>
   <p>整合资源搜索、链接解析与网盘转存，提供适配桌面和移动设备的 Web 界面。</p>
@@ -288,6 +289,7 @@ pnpm build
 </div>
 
 如需联系作者确认赞赏，可使用[联系表单](https://wj.qq.com/s2/26394114/3f81/)。
+
 
 感谢贡献代码、提出反馈以及持续支持项目的朋友们。
 
