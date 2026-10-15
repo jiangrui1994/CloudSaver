@@ -1,362 +1,302 @@
-# CloudSaver
+<div align="center">
+  <h1>CloudSaver</h1>
+  <p><strong>一个可自行部署的网盘资源搜索与转存工具</strong></p>
+  <p>整合资源搜索、链接解析与网盘转存，提供适配桌面和移动设备的 Web 界面。</p>
+  <p>
+    <a href="https://github.com/jiangrui1994/CloudSaver/stargazers"><img src="https://img.shields.io/github/stars/jiangrui1994/CloudSaver?style=flat-square&logo=github" alt="GitHub Stars" /></a>
+    <a href="https://hub.docker.com/r/jiangrui1994/cloudsaver"><img src="https://img.shields.io/docker/pulls/jiangrui1994/cloudsaver?style=flat-square&logo=docker" alt="Docker Pulls" /></a>
+    <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-blue?style=flat-square" alt="MIT License" /></a>
+    <a href="https://vuejs.org/"><img src="https://img.shields.io/badge/Vue-3-42b883?style=flat-square&logo=vuedotjs&logoColor=white" alt="Vue 3" /></a>
+  </p>
+  <p>
+    <a href="#快速部署">快速部署</a> ·
+    <a href="#功能特性">功能特性</a> ·
+    <a href="https://www.yuque.com/xiaoruihenbangde/ggogn3/ga6gaaiy5fsyw62l"><strong>📖 使用文档</strong></a> ·
+    <a href="https://www.yuque.com/xiaoruihenbangde/ggogn3/vxoqxkx4rkcz3g94">更新日志</a> ·
+    <a href="#交流与反馈">交流反馈</a>
+  </p>
+  <a href="https://hellogithub.com/repository/d13663fb959345e7923ecaccc3387571"><img src="https://abroad.hellogithub.com/v1/widgets/recommend.svg?rid=d13663fb959345e7923ecaccc3387571&claim_uid=xP1MT4mSvN6wn5K&theme=small" alt="HelloGitHub 推荐" /></a>
+</div>
 
-![License](https://img.shields.io/badge/license-MIT-blue.svg)
-![Vue](https://img.shields.io/badge/vue-3.x-brightgreen.svg)
-![TypeScript](https://img.shields.io/badge/typescript-5.x-blue.svg)
-[![GitHub Stars](https://img.shields.io/github/stars/jiangrui1994/CloudSaver.svg?style=flat&logo=github)](https://github.com/jiangrui1994/CloudSaver/stargazers)
-![Docker](https://img.shields.io/docker/pulls/jiangrui1994/cloudsaver.svg)
-<a href="https://hellogithub.com/repository/d13663fb959345e7923ecaccc3387571" target="_blank"><img src="https://abroad.hellogithub.com/v1/widgets/recommend.svg?rid=d13663fb959345e7923ecaccc3387571&claim_uid=xP1MT4mSvN6wn5K&theme=small" alt="Featured｜HelloGitHub" /></a>
+> [!TIP]
+> **📖 [查看 CloudSaver 使用文档 →](https://www.yuque.com/xiaoruihenbangde/ggogn3/ga6gaaiy5fsyw62l)**  
+> 包含 **部署教程、使用说明、常见问题及更多搜索频道**，建议首次使用前阅读。  
+> 🔑 **文档访问密码：`me16`**（如语雀提示输入访问密码，请填写此密码）。
 
-一个基于 Vue 3 + Express 的网盘资源搜索与转存工具，支持响应式布局，移动端与PC完美适配，可通过 Docker 一键部署。
+> [!IMPORTANT]
+> **版本说明：**本仓库公开的源码版本为 **v0.2.5**，较新版本的功能并未同步到这里。希望使用较新版本的用户，请优先选择下方提供的 Docker 镜像。**Docker 镜像与本仓库源码不一定一一对应**；不同版本的功能、配置方式请以对应版本文档为准。
 
-官方Telegram群组：[https://t.me/+4fWSSbQn5rMxYjM1](https://t.me/+4fWSSbQn5rMxYjM1)
-
-官方QQ交流群（[群地址](https://www.yuque.com/xiaoruihenbangde/ggogn3/ga6gaaiy5fsyw62l#lsPla))
-
-版本更新日志：[https://www.yuque.com/xiaoruihenbangde/ggogn3/vxoqxkx4rkcz3g94](https://www.yuque.com/xiaoruihenbangde/ggogn3/vxoqxkx4rkcz3g94)
-
-CloudSaver部署与使用常见问题(包含更多搜索频道)：[https://www.yuque.com/xiaoruihenbangde/ggogn3/ga6gaaiy5fsyw62l](https://www.yuque.com/xiaoruihenbangde/ggogn3/ga6gaaiy5fsyw62l)
-密码 me16 点个Star呗~
-
-⚠️关于项目更新与需求处理的核心声明：[https://www.yuque.com/xiaoruihenbangde/ggogn3/gt9cgqn2n3vergxx](https://www.yuque.com/xiaoruihenbangde/ggogn3/gt9cgqn2n3vergxx)
-
----
-
-⚠️**由于某些原因，[新版本](https://www.yuque.com/xiaoruihenbangde/ggogn3/vxoqxkx4rkcz3g94)内容不包含在此开源仓库(停留在V0.2.5版本)，如需使用，请使用docker镜像进行部署使用。**
-
----
-
-**🔒 重要安全提醒｜关于本项目私有化部署的强制建议**
-
-为保障您的数据安全与隐私权益，请务必**通过Docker自行私有化部署本项目**。我们**强烈反对**使用任何第三方提供的在线网站或他人部署的服务，原因如下：
-
-⚠️ **高风险预警**
-
-- 本项目涉及**网盘Cookie等敏感凭据**，若使用他人服务：  
-  ▶ 您的账号密码、隐私文件可能遭恶意窃取或篡改  
-  ▶ 攻击者可利用Cookie直接登录您的网盘实施破坏  
-  ▶ 数据泄露、资产损失等后果需完全由使用者自行承担
-
-🚫 **严正声明**
-
-1. 本项目**从未且不会**提供任何形式的在线服务、公开Demo或托管平台
-2. **任何声称与本项目相关的在线网站均为未授权第三方搭建**，存在蓄意作恶的高风险
-3. 如因使用非自建服务导致损失，本项目开发者**不承担任何法律责任**
-
-❓ **常见问题**  
-Q: 是否有在线Demo可直接试用？  
-A: **绝无可能！** 任何在线服务都与本项目无关，请立即关闭避免信息泄露
-
-Q: 为何不能使用他人部署好的服务？  
-A: Cookie等同于账号密码，交出Cookie=交出家门钥匙，请勿将身家安全托付陌生人
-
-Q: 如何确保100%安全？  
-A: 唯一可信方案：通过官方仓库代码+自主服务器部署，全程数据闭环
-
----
-
-**🛡️ 最后一次严肃提醒**  
-您的账号安全只应掌握在自己手中！  
-请立即执行私有化部署 ▶ 避免无法挽回的数据灾难
-
----
+> [!CAUTION]
+> **请自行部署，不要在陌生网站填写网盘 Cookie。** CloudSaver 项目方不提供官方在线 Demo 或托管服务。网盘 Cookie 等凭据可能赋予第三方访问账号及文件的能力，请仅在自己信任的环境中使用，并妥善保护配置及数据。
 
 ## 功能特性
 
-- 🔍 多源资源搜索
-  - 支持多个资源订阅源搜索
-  - 支持关键词搜索与资源链接解析
-  - 支持豆瓣热门榜单展示
-- 💾 网盘资源转存
-  - 支持**115 网盘，夸克网盘，天翼网盘，123云盘**一键转存
-  - 支持转存文件夹展示与选择
-- 👥 多用户系统
-  - 支持用户注册登录
-  - 支持管理员与普通用户权限区分
-- 📱 响应式设计
-  - 支持 PC 端与移动端自适应布局
-  - 针对不同设备优化的交互体验
+| 能力 | 说明 |
+| --- | --- |
+| **多源资源搜索** | 聚合订阅源，支持关键词搜索、分享链接解析及豆瓣热门榜单展示 |
+| **网盘快捷转存** | 支持 115 网盘、夸克网盘、天翼网盘、123 云盘等平台的转存操作，以及目标文件夹选择 |
+| **多用户管理** | 提供注册、登录及管理员与普通用户的权限区分 |
+| **多端适配** | 基于响应式 Web 界面，在 PC 与移动设备上使用 |
 
-## 产品展示
+> 上述能力来自项目现有介绍；**不同源码版本和 Docker 镜像版本支持的功能可能存在差异**。
+
+## 界面预览
+
+> **说明：**以下截图仅供参考，可能与当前版本存在差异，实际界面请以最新发布版本为准。
+
+<div align="center">
+  <img src="./docs/images/pc/search.png" width="48%" alt="CloudSaver PC 端资源搜索页面" />
+  <img src="./docs/images/pc/save.png" width="48%" alt="CloudSaver PC 端资源转存页面" />
+  <p><sub>PC 端 · 资源搜索 / 转存</sub></p>
+</div>
 
 <details>
-<summary>点击展开截图预览</summary>
+<summary><b>查看更多界面截图（PC / 移动端）</b></summary>
 
 ### PC 端
 
 <div align="center">
-  <img src="./docs/images/pc/login.png" width="400" alt="PC登录页面">
-   <img src="./docs/images/pc/douban.png" width="400" alt="PC豆瓣榜单">
-  <p>登录页面/榜单</p>
-</div>
-
-<div align="center">
-  <img src="./docs/images/pc/search.png" width="400" alt="PC资源搜索">
-  <img src="./docs/images/pc/detail.png" width="400" alt="PC资源详情">
-  <p>资源搜索/资源详情</p>
-</div>
-
-<div align="center">
-  <img src="./docs/images/pc/save.png" width="400" alt="PC资源转存">
-  <img src="./docs/images/pc/save1.png" width="400" alt="PC资源转存">
-  <p>资源转存</p>
+  <img src="./docs/images/pc/login.png" width="48%" alt="PC 端登录页面" />
+  <img src="./docs/images/pc/douban.png" width="48%" alt="PC 端豆瓣榜单" />
+  <img src="./docs/images/pc/detail.png" width="48%" alt="PC 端资源详情" />
+  <img src="./docs/images/pc/save1.png" width="48%" alt="PC 端转存目录选择" />
 </div>
 
 ### 移动端
 
 <div align="center">
-  <div style="display: inline-block; margin: 0 20px;">
-    <img src="./docs/images/mobile/login.png" width="200" alt="移动端登录页面">
-    <img src="./docs/images/mobile/search.png" width="200" alt="移动端资源搜索">
-    <img src="./docs/images/mobile/save.png" width="200" alt="移动端资源转存">
-    <img src="./docs/images/mobile/save1.png" width="200" alt="移动端资源转存">
-  </div>
+  <img src="./docs/images/mobile/login.png" width="23%" alt="移动端登录页面" />
+  <img src="./docs/images/mobile/search.png" width="23%" alt="移动端资源搜索" />
+  <img src="./docs/images/mobile/save.png" width="23%" alt="移动端转存" />
+  <img src="./docs/images/mobile/save1.png" width="23%" alt="移动端转存目录选择" />
 </div>
 
 </details>
 
-## 技术栈
+## 快速部署
 
-### 前端
+推荐使用 **Docker Compose** 部署。无需在宿主机安装 Node.js，也方便维护数据与配置目录。
 
-- 核心框架
-  - Vue 3
-  - TypeScript
-  - Vite
-- 状态管理
-  - Pinia
-- 路由管理
-  - Vue Router
-- UI 组件库
-  - Element Plus (PC)
-  - Vant (Mobile)
-- 工具库
-  - Axios
-
-### 后端
-
-- 运行环境
-  - Node.js
-  - Express
-- 数据存储
-  - SQLite3
-
-## 环境要求
-
-- Node.js >= 18.x
-- pnpm >= 8.x (推荐)
-
-## 快速开始
-
-### 开发环境
-
-1. 克隆项目
+### 1. 创建配置目录
 
 ```bash
-git clone https://github.com/jiangrui1994/CloudSaver.git
-cd CloudSaver
+mkdir -p cloudsaver/{data,config}
+cd cloudsaver
 ```
 
-2. 安装依赖
+创建 `config/env` 文件，并将 `JWT_SECRET` 修改为自己生成的、足够长的随机字符串：
 
-```bash
-pnpm install
+```dotenv
+JWT_SECRET=replace_with_your_own_long_random_secret
+TELEGRAM_BASE_URL=https://t.me/s
 ```
 
-3. 配置环境变量
+> 请勿直接使用示例密钥。较新镜像所需的配置项可能发生变化，遇到差异时请参阅[部署与常见问题文档](https://www.yuque.com/xiaoruihenbangde/ggogn3/ga6gaaiy5fsyw62l)。
 
-```bash
-cp ./backend/.env.example ./backend/.env
-```
+### 2. 创建 Compose 文件
 
-根据 `.env.example` 文件说明配置必要的环境变量。
-
-4. 启动开发服务器
-
-```bash
-pnpm dev
-```
-
-### 生产环境部署
-
-1. 构建前端
-
-```bash
-pnpm build:frontend
-```
-
-2. 构建后端
-
-```bash
-cd backend
-pnpm build
-```
-
-3. 启动服务
-
-```bash
-pnpm start
-```
-
-### Docker 部署
-
-说明：镜像源有**两个地址**供选择，下面部署命令中使用的是dockerhub托管的地址为例，github托管的地址请自行替换
-
-- dockerhub托管：
-  - `jiangrui1994/cloudsaver:latest` 稳定版
-  - `jiangrui1994/cloudsaver:test` 测试版 （包含最新功能和bug修复，但可能不如稳定版稳定）
-- github托管：
-  - `ghcr.io/jiangrui1994/cloudsaver:latest` 稳定版
-  - `ghcr.io/jiangrui1994/cloudsaver:test` 测试版 （包含最新功能和bug修复，但可能不如稳定版稳定）
-
-#### 单容器部署
-
-稳定版：
-
-```bash
-docker run -d \
-  -p 8008:8008 \
-  -v /your/local/path/data:/app/data \
-  -v /your/local/path/config:/app/config \
-  --name cloud-saver \
-  jiangrui1994/cloudsaver:latest
-```
-
-测试版（包含最新功能和bug修复，但可能不如稳定版稳定）：
-
-```bash
-docker run -d \
-  -p 8008:8008 \
-  -v /your/local/path/data:/app/data \
-  -v /your/local/path/config:/app/config \
-  --name cloud-saver \
-  jiangrui1994/cloudsaver:test
-```
-
-#### Docker Compose 部署
-
-创建 `docker-compose.yml` 文件：
-
-稳定版：
+在当前目录新建 `compose.yaml`：
 
 ```yaml
-version: "3"
 services:
   cloudsaver:
     image: jiangrui1994/cloudsaver:latest
-    container_name: cloud-saver
+    container_name: cloudsaver
     ports:
       - "8008:8008"
     volumes:
-      - /your/local/path/data:/app/data
-      - /your/local/path/config:/app/config
+      - ./data:/app/data
+      - ./config:/app/config
     restart: unless-stopped
 ```
 
-测试版：
-
-```yaml
-version: "3"
-services:
-  cloudsaver:
-    image: jiangrui1994/cloudsaver:test
-    container_name: cloud-saver
-    ports:
-      - "8008:8008"
-    volumes:
-      - /your/local/path/data:/app/data
-      - /your/local/path/config:/app/config
-    restart: unless-stopped
-```
-
-#### /app/config 目录说明
-
-- `env` 文件：包含后端环境变量配置
+### 3. 启动服务
 
 ```bash
-# JWT配置
-JWT_SECRET=your_jwt_secret_here
-
-# Telegram配置
-TELEGRAM_BASE_URL=https://t.me/s
-
-# Telegram频道配置(0.3.0及之后版本无效)
-TELE_CHANNELS=[{"id":"xxxx","name":"xxxx资源分享"}]
+docker compose up -d
 ```
 
-运行：
+启动后，访问 `http://localhost:8008`；如果部署在局域网服务器上，请将 `localhost` 替换为对应设备的 IP 地址。
+
+查看服务日志：
 
 ```bash
-docker-compose up -d
+docker compose logs -f cloudsaver
 ```
 
-> **注意**: 测试版（:test标签）包含最新的功能开发和bug修复，但可能存在不稳定因素。建议生产环境使用稳定版（:latest标签）。
+升级镜像（升级前建议备份 `data` 和 `config` 目录）：
 
-## 注意事项
+```bash
+docker compose pull
+docker compose up -d
+```
 
-1. 资源搜索需要配置代理环境
-2. 默认注册码
-   - 管理员：230713
-   - 普通用户：9527
+### 其他部署选择
 
-## 联系方式
+| 镜像来源 | 稳定版 | 测试版 |
+| --- | --- | --- |
+| Docker Hub | `jiangrui1994/cloudsaver:latest` | `jiangrui1994/cloudsaver:test` |
+| GitHub Container Registry | `ghcr.io/jiangrui1994/cloudsaver:latest` | `ghcr.io/jiangrui1994/cloudsaver:test` |
 
-<div align="center">
-  <div>
-   官方QQ交流群（群地址(https://www.yuque.com/xiaoruihenbangde/ggogn3/ga6gaaiy5fsyw62l#lsPla))
-  </div>
-</div>
+- **稳定版 `latest`：**适合日常使用。
+- **测试版 `test`：**用于体验新功能与修复，可能存在不稳定情况；将 Compose 中的 `image` 替换成对应标签即可。
+- **镜像来源切换：**只需替换 `image` 地址，不需要同时运行两份服务。
+
+<details>
+<summary><b>使用 docker run 部署</b></summary>
+
+在预先创建好 `data`、`config` 目录以及 `config/env` 文件后执行：
+
+```bash
+docker run -d \
+  --name cloudsaver \
+  -p 8008:8008 \
+  -v "$(pwd)/data:/app/data" \
+  -v "$(pwd)/config:/app/config" \
+  --restart unless-stopped \
+  jiangrui1994/cloudsaver:latest
+```
+
+</details>
+
+## 首次使用与配置
+
+### 注册码
+
+本仓库 **v0.2.5 源码**定义的初始注册码如下：
+
+| 用户类型 | 初始注册码 |
+| --- | --- |
+| 管理员 | `230713` |
+| 普通用户 | `9527` |
+
+**安全建议：**初次部署后，请尽快在管理设置中修改默认注册码，并设置强密码。不要未经访问控制就把管理界面直接暴露到公网。新版本的注册与管理方式请以对应版本的实际界面为准。
+
+### Telegram 资源搜索
+
+资源搜索依赖频道 / 订阅源以及访问 Telegram 相关页面所需的网络条件。部分网络环境需要配置 HTTP 代理；可在项目的管理设置中检查代理地址、端口和启用状态。
+
+> 使用 Docker 时，容器内的 `127.0.0.1` 指向**容器自身**，不是你的宿主机。若代理运行在宿主机上，请填写容器能够访问的主机地址，并确认代理允许来自容器的连接。
+
+在 **v0.2.5 源码**中，`backend/.env` 还支持 `TELE_CHANNELS` 配置；原项目文档注明该配置在 **v0.3.0 及之后版本无效**。较新版本的频道配置方式请查看[使用说明](https://www.yuque.com/xiaoruihenbangde/ggogn3/ga6gaaiy5fsyw62l)。
+
+### 数据持久化
+
+| 容器目录 | 用途 |
+| --- | --- |
+| `/app/data` | 保存应用持久化数据（包括 SQLite 数据库） |
+| `/app/config` | 保存运行配置，例如 `env` 文件 |
+
+请定期备份这两个目录，且不要公开其中的凭据、数据库或备份文件。
+
+## 本地开发
+
+> 本节面向希望阅读、调试或参与开发 **v0.2.5 开源源码**的开发者，不代表当前较新 Docker 镜像的全部实现。
+
+**环境要求：**Node.js 18 或更高版本、pnpm（建议 8 或更高版本）。
+
+```bash
+# 1. 获取源码
+git clone https://github.com/jiangrui1994/CloudSaver.git
+cd CloudSaver
+
+# 2. 安装依赖
+pnpm install
+
+# 3. 创建后端环境配置
+cp backend/.env.example backend/.env
+
+# 4. 启动前后端开发服务
+pnpm dev
+```
+
+启动前修改 `backend/.env` 中的 `JWT_SECRET`。默认情况下，前端开发服务使用 `http://localhost:8008`，后端使用 `http://localhost:8009`。
+
+构建项目：
+
+```bash
+pnpm build
+```
+
+源码项目使用 Vue 3、TypeScript、Vite、Pinia、Vue Router、Element Plus、Vant、Node.js、Express 与 SQLite。仓库中 `frontend/` 和 `backend/` 分别存放前、后端代码。
+
+## 常见问题
+
+<details>
+<summary><b>是否有官方在线 Demo？</b></summary>
+
+没有。CloudSaver 项目方不提供在线 Demo 或托管平台。请通过自己信任的环境部署，不要在不明网站中提交网盘 Cookie 等敏感凭据。
+
+</details>
+
+<details>
+<summary><b>为什么搜索结果为空或图片无法加载？</b></summary>
+
+先检查资源订阅源是否可用，以及 Telegram 相关地址能否从**应用运行环境**正常访问；如使用代理，确认代理的主机、端口和容器网络配置均正确。第三方来源变动也可能影响搜索结果。
+
+</details>
+
+<details>
+<summary><b>为什么我从源码构建的功能与 Docker 镜像不同？</b></summary>
+
+公开仓库的源码停留在 v0.2.5，较新版本并未全部公开到本仓库，因此从源码构建的版本不等同于 `latest` 镜像。
+
+</details>
+
+<details>
+<summary><b>在哪里查看更新日志、更多频道和使用问题？</b></summary>
+
+- [版本更新日志](https://www.yuque.com/xiaoruihenbangde/ggogn3/vxoqxkx4rkcz3g94)
+- [部署与使用常见问题（含更多搜索频道）](https://www.yuque.com/xiaoruihenbangde/ggogn3/ga6gaaiy5fsyw62l)
+- [项目更新与需求处理说明](https://www.yuque.com/xiaoruihenbangde/ggogn3/gt9cgqn2n3vergxx)
+
+部分语雀页面若提示访问密码，可尝试原文档提供的 `me16`。
+
+</details>
+
+## 安全与使用须知
+
+- **自行部署：**建议仅在个人或可信环境中使用。如果需要远程访问，请自行配置 HTTPS、身份验证和必要的网络访问控制。
+- **保护凭据：**网盘 Cookie、JWT 密钥、数据库以及配置文件均应按敏感数据处理，不要提交到公开仓库或分享给他人。
+- **自行评估版本：**使用 Docker 镜像前，请确认其来源并评估信任风险。自行部署也不意味着绝对安全。
+- **合法使用：**搜索内容和分享链接来自第三方，请遵守适用法律、平台条款和相关权利人的合法权益。项目不对第三方资源的准确性、可用性和合法性作出保证。
+
+## 交流与反馈
+
+- [Telegram 交流群](https://t.me/+4fWSSbQn5rMxYjM1)
+- [QQ 交流群与使用帮助](https://www.yuque.com/xiaoruihenbangde/ggogn3/ga6gaaiy5fsyw62l#lsPla)
+- [GitHub Issues](https://github.com/jiangrui1994/CloudSaver/issues)：提交可复现的问题与建议
+- [项目维护及需求处理说明](https://www.yuque.com/xiaoruihenbangde/ggogn3/gt9cgqn2n3vergxx)
+
+反馈问题时，建议注明镜像标签或源码版本、部署方式、问题复现步骤及必要日志（**务必先删除 Cookie、令牌等敏感信息**）。
+
+## 贡献与开源协议
+
+欢迎通过 Issue 或 Pull Request 参与开源仓库现有源码的改进。贡献前建议先确认问题是否已经被反馈，并在 PR 中说明改动目的和验证方式。
+
+本仓库代码根据 [MIT License](LICENSE) 授权。请注意：**MIT 许可证允许商业使用**；具体使用行为仍需遵守适用法律、第三方平台条款及第三方内容的权利要求。本仓库的 MIT 许可不应被理解为对未公开发布的镜像版本或第三方内容的额外授权。
 
 ## 支持项目
 
-如果您觉得这个项目对您有帮助，可以考虑给予一点支持，这将帮助我们持续改进项目 ❤️
+如果 CloudSaver 对你有帮助，欢迎给仓库点一个 [Star](https://github.com/jiangrui1994/CloudSaver/stargazers)、分享项目，或通过以下方式支持维护工作。
 
-您可以：
-
-- ⭐ 给项目点个 Star
-- 🎉 分享给更多有需要的朋友
-- ☕ 请作者喝杯冰阔乐或咖啡
-- 💰 **赞赏了一定记得[和我联系(点我！)](https://wj.qq.com/s2/26394114/3f81/)**
+<summary><b>赞赏作者</b></summary>
 
 <div align="center">
-  <div style="display: inline-block; margin: 0 20px;">
-    <img src="https://oss.jiangmuxin.cn/cloudsaver/wechat_pay.jpg" height="300" alt="微信打赏">
-    <img src="https://oss.jiangmuxin.cn/cloudsaver/alipay.png" height="300" alt="支付宝打赏">
-  </div>
+  <img src="https://oss.jiangmuxin.cn/cloudsaver/wechat_pay.jpg" width="220" alt="微信赞赏二维码" />
+  <img src="https://oss.jiangmuxin.cn/cloudsaver/alipay.png" width="220" alt="支付宝赞赏二维码" />
 </div>
 
-## 特别声明
+如需联系作者确认赞赏，可使用[联系表单](https://wj.qq.com/s2/26394114/3f81/)。
 
-1. 本项目仅供学习交流使用，请勿用于非法用途
-2. 仅支持个人使用，不支持任何形式的商业使用
-3. 禁止在项目页面进行任何形式的广告宣传
-4. 所有搜索到的资源均来自第三方，本项目不对其真实性、合法性做出任何保证
+感谢贡献代码、提出反馈以及持续支持项目的朋友们。
 
-## 贡献指南
+### 赞助支持
 
-1. Fork 本仓库
-2. 创建特性分支 (`git checkout -b feature/AmazingFeature`)
-3. 提交更改 (`git commit -m 'Add some AmazingFeature'`)
-4. 推送到分支 (`git push origin feature/AmazingFeature`)
-5. 提交 Pull Request
+感谢 [Tencent EdgeOne](https://edgeone.ai/?from=github) 为项目提供 CDN 加速及安全防护支持。
 
-## 开源协议
+<a href="https://edgeone.ai/?from=github"><img src="https://edgeone.ai/media/34fe3a45-492d-4ea4-ae1087ca7b4b.png" width="260" alt="Tencent EdgeOne" /></a>
 
-本项目基于 MIT 协议开源 - 查看 [LICENSE](LICENSE) 文件了解更多细节
+### Star History
 
-## 鸣谢
-
-- 👨‍💻 感谢所有为这个项目做出贡献的开发者们！
-- 👥 感谢所有使用本项目并提供反馈的用户！
-- 感谢所有给予支持和鼓励的朋友们！
-
-## 赞助
-本项目 CDN 加速及安全防护由 Tencent EdgeOne 赞助
-
-<a href="https://edgeone.ai/?from=github" target="_blank">亚洲最佳CDN、边缘和安全解决方案 - Tencent EdgeOne</a>
-
-<img title="亚洲最佳CDN、边缘和安全解决方案 - Tencent EdgeOne" src="https://edgeone.ai/media/34fe3a45-492d-4ea4-ae5d-ea1087ca7b4b.png" width="300">
-
-## Star History
-
-[![Star History Chart](https://api.star-history.com/svg?repos=jiangrui1994/cloudsaver&type=Date)](https://www.star-history.com/#jiangrui1994/cloudsaver&Date)
+[![Star History Chart](https://api.star-history.com/svg?repos=jiangrui1994/CloudSaver&type=Date)](https://www.star-history.com/#jiangrui1994/CloudSaver&Date)
