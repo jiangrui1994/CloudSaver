@@ -1,0 +1,11 @@
+{
+  "version": "0.10.0",
+  "publishedAt": "2026-11-19",
+  "headline": "新增外部搜索源，可接入自部署的搜索服务。",
+  "highlights": [
+    "内置 pansou 与通用 JSON 模板，支持表单和 JSON 编辑，保存前可测试请求并预览映射结果。",
+    "外部源结果独立分组，可整体排在 Telegram 频道之前，并可对支持的网盘链接执行转存及转存后推送。",
+    "支持接入局域网搜索服务。每个外部源可单独设置超时，失败时在对应分组显示「源异常」。"
+  ],
+  "releaseNotesUrl": "https://jiangrui1994.github.io/CloudSaver/release-notes/0.10.0"
+}

@@ -1,0 +1,5 @@
+node_modules/
+.vitepress/dist/
+.vitepress/cache/
+release-notes/
+!release-notes/.gitkeep
