@@ -1,0 +1,16 @@
+{
+  "name": "cloudsaver-website",
+  "private": true,
+  "type": "module",
+  "description": "CloudSaver 官方文档站（VitePress + GitHub Pages）",
+  "scripts": {
+    "dev": "vitepress dev",
+    "build": "vitepress build",
+    "preview": "vitepress preview",
+    "gen:notes": "node scripts/gen-release-notes.mjs"
+  },
+  "devDependencies": {
+    "vitepress": "^1.6.3",
+    "vue": "^3.5.13"
+  }
+}

@@ -1,0 +1,90 @@
+/* 截图展示样式：圆角 + 描边，暗色模式下降低亮度贴合背景 */
+.vp-doc img {
+  border-radius: 10px;
+  border: 1px solid var(--vp-c-divider);
+}
+
+.dark .vp-doc img {
+  border-color: var(--vp-c-divider);
+}
+
+/* 截图并排展示：等高一行，窄屏自动换行 */
+.shot-row {
+  display: flex;
+  gap: 12px;
+  align-items: stretch;
+  margin: 16px 0;
+}
+
+.shot-row > * {
+  min-width: 0;
+}
+
+.shot-row img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.shot-row__col {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* 图文并排：文字与设备预览垂直居中对齐 */
+.content-pair {
+  display: flex;
+  gap: 28px;
+  align-items: center;
+  margin: 16px 0;
+}
+
+.content-pair__text {
+  flex: 1;
+  min-width: 0;
+  margin: 0;
+  padding-left: 20px;
+  display: grid;
+  gap: 14px;
+}
+
+.device-preview {
+  flex: 0 0 188px;
+  margin: 0;
+  padding: 8px;
+  border-radius: 28px;
+  border: 1px solid var(--vp-c-divider);
+  background: var(--vp-c-bg-soft);
+  box-shadow: var(--vp-shadow-1);
+}
+
+.device-preview img {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: 20px;
+}
+
+.device-preview figcaption {
+  margin-top: 8px;
+  text-align: center;
+  color: var(--vp-c-text-2);
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+@media (max-width: 768px) {
+  .content-pair {
+    flex-direction: column-reverse;
+  }
+
+  .device-preview {
+    flex-basis: auto;
+    width: 200px;
+  }
+
+  .shot-row {
+    flex-direction: column;
+  }
+}
